@@ -3,19 +3,12 @@ const asyncHandler = require('express-async-handler')
 const Comment = require('../models/commentModel')
 const User = require('../models/userModel')
 
-// @desc    Get ALL comments
-// @route   GET /api/comments
-// @access  Authenticated
-const getAllComments = asyncHandler(async (req, res) => {
-  const goals = await Comment.find()
-  res.status(200).json(goals)
-})
 
-// @desc    Get goals
-// @route   GET /api/goals
+// @desc    Get comments
+// @route   GET /api/comments
 // @access  Private
 const getComments = asyncHandler(async (req, res) => {
-  const goals = await Comment.find({ user: req.user.id })
+  const goals = await Comment.find()
 
   res.status(200).json(goals)
 })
@@ -96,7 +89,6 @@ const deleteComment = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-  getAllComments,
   getComments,
   setComment,
   updateComment,
