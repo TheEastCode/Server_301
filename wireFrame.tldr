@@ -66,9 +66,9 @@
     {
       "id": "pointer:pointer",
       "typeName": "pointer",
-      "x": -23.613227927562946,
-      "y": -167.2592932748738,
-      "lastActivityTimestamp": 1702946861456,
+      "x": 210.69855291935534,
+      "y": 1514.6309227927893,
+      "lastActivityTimestamp": 1702947607836,
       "meta": {}
     },
     {
@@ -79,9 +79,9 @@
       "typeName": "page"
     },
     {
-      "x": 601.8001655609062,
-      "y": 16.90504495037938,
-      "z": 0.33698909881172223,
+      "x": 269.4525251506903,
+      "y": -254.34392974819002,
+      "z": 0.4454435551967436,
       "meta": {},
       "id": "camera:page:page",
       "typeName": "camera"
@@ -119,8 +119,8 @@
       "screenBounds": {
         "x": 0,
         "y": 0,
-        "w": 927.5,
-        "h": 558.3333129882812
+        "w": 1080.833251953125,
+        "h": 592.5
       },
       "zoomBrush": null,
       "isGridMode": false,
@@ -132,16 +132,13 @@
       "isFocused": true,
       "devicePixelRatio": 1,
       "isCoarsePointer": false,
-      "isHoveringCanvas": false,
-      "openMenus": [
-        "pages",
-        "page-menu"
-      ],
+      "isHoveringCanvas": true,
+      "openMenus": [],
       "isChangingStyle": false,
       "isReadonly": false,
       "meta": {},
       "id": "instance:instance",
-      "currentPageId": "page:aWqOJQYVnssPbLARKMdm4",
+      "currentPageId": "page:page",
       "typeName": "instance"
     },
     {
