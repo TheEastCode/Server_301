@@ -1,0 +1,24 @@
+.
+├── config
+│   └── db.js
+├── controllers
+│   ├── commentController.js
+│   ├── goalController.js
+│   ├── snakeController.js
+│   └── userController.js
+├── middleware
+│   ├── authMiddleware.js
+│   └── errorMiddleware.js
+├── models
+│   ├── commentModel.js
+│   ├── goalModel.js
+│   ├── taskModel.js
+│   └── userModel.js
+├── package.json
+├── package-lock.json
+├── README.md
+├── routes
+│   ├── commentRoutes.js
+│   ├── goalRoutes.js
+│   └── userRoutes.js
+└── server.js

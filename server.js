@@ -15,8 +15,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Goal and Task Routes
+const goalRoutes = require('./routes/goalRoutes');
+
 // app.use('/api/comments', require('./routes/commentRoutes'));
-app.use('/api/goals', require('./routes/goalRoutes'));
+app.use('/api/goals', goalRoutes);
 app.use('/api/users', require('./routes/userRoutes'));
 
 // Serve frontend
