@@ -20,3 +20,8 @@ GoalEase is an all-in-one goal management platform designed to streamline the cr
 GoalSnake is the gamified component within GoalEase Snake Edition. Each segment of the snake represents a goal or task, and players interact with their goals through classic snake gameplay. The integration adds a dynamic layer to traditional goal management, providing users with a unique and entertaining approach to achieving their objectives.
 
 ## [User Stories](https://github.com/TheEastCode/Client_301/wiki/User-Stories)
+
+## Wireframe
+
+![wireframe1](wireframe1.png)
+![wireframe2](wireframe2.png)
