@@ -17,9 +17,11 @@ app.use(express.urlencoded({ extended: false }));
 
 // Goal and Task Routes
 const goalRoutes = require('./routes/goalRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
 // app.use('/api/comments', require('./routes/commentRoutes'));
 app.use('/api/goals', goalRoutes);
+app.use('/api/goals/:goalId/tasks', taskRoutes); // Nested task routes under a specific goal
 app.use('/api/users', require('./routes/userRoutes'));
 
 // Serve frontend

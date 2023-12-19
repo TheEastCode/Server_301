@@ -3,20 +3,28 @@ const asyncHandler = require('express-async-handler');
 const Goal = require('../models/goalModel');
 const User = require('../models/userModel');
 
-// // @desc    Update goal completion status
-// // @access  Private
-// const updateGoalCompletionStatus = async (goalId) => {
-//   const incompleteTaskCount = await Task.countDocuments({ goal: goalId, completed: false });
-//   const isCompleted = incompleteTaskCount === 0;
-//   await Goal.findByIdAndUpdate(goalId, { isCompleted });
-// };
+// @desc    Update goal completion status
+// @access  Private
+const updateGoalCompletionStatus = async (goalId) => {
+  const goal = await Goal.findById(goalId);
+  // Check if the goal exists
+  if (!goal) {
+    // Handle the case where the goal is not found, e.g., throw an error or return a value
+    throw new Error('Goal not found');
+  }
+  // Ensure goal.tasks is treated as an empty array if it's null or undefined
+  const tasks = goal.tasks || [];
+  const incompleteTaskCount = tasks.filter(task => !task.completed).length;
+  const isCompleted = incompleteTaskCount === 0;
+  await Goal.findByIdAndUpdate(goalId, { isCompleted });
+};
 
 
 // @desc    Get goals
 // @route   GET /api/goals
 // @access  Private
 const getGoals = asyncHandler(async (req, res) => {
-  const goals = await Goal.find({ user: req.user.id }).populate('tasks');
+  const goals = await Goal.find({ user: req.user.id });
   res.status(200).json(goals);
 });
 
@@ -84,17 +92,18 @@ const deleteGoal = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error('User not authorized');
   }
-
+  // Delete all tasks associated with the goal
+  await Task.deleteMany({ goal: goal._id });
+  // Delete the goal
   await goal.remove();
   res.status(200).json({ id: req.params.id });
 });
-
-// ============================ TASKS ========================== //
 
 
 module.exports = {
   getGoals,
   setGoal,
   updateGoal,
-  deleteGoal
+  deleteGoal,
+  updateGoalCompletionStatus
 };
