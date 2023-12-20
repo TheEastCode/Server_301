@@ -1,32 +1,36 @@
-const asyncHandler = require('express-async-handler')
-
-const Comment = require('../models/commentModel')
-const User = require('../models/userModel')
+const asyncHandler = require("express-async-handler")
+const Comment = require("../models/commentModel")
+const User = require("../models/userModel")
 
 
 // @desc    Get comments
 // @route   GET /api/comments
 // @access  Authenticated
 const getComments = asyncHandler(async (req, res) => {
-  const comments = await Comment.find()
+  const comments = await Comment.find({ status: "public" })
+    .populate("user")
+    .sort({ createdAt: "desc" })
+    .lean()
   res.status(200).json(comments)
 })
 
 
 // @desc    Post a comment
-// @route   POST /api/comments
+// @route   POST /api/comments/:type/:id
 // @access  Private
 const postComment = asyncHandler(async (req, res) => {
   if (!req.body.text) {
     res.status(400)
-    throw new Error('Please add a text field')
+    throw new Error("Please add a text field")
   }
 
+  const type = req.params.type
+  const id = req.params.id
   const comment = await Comment.create({
     text: req.body.text,
     user: req.user.id,
   })
-
+  comment.setTarget(type, id)
   res.status(200).json(comment)
 })
 
@@ -39,22 +43,26 @@ const updateComment = asyncHandler(async (req, res) => {
 
   if (!comment) {
     res.status(400)
-    throw new Error('Comment not found')
+    throw new Error("Comment not found")
   }
   // Check for user
   if (!req.user) {
     res.status(401)
-    throw new Error('User not found')
+    throw new Error("User not found")
   }
   // Make sure the logged in user matches the comment user
   if (comment.user.toString() !== req.user.id) {
     res.status(401)
-    throw new Error('User not authorized')
+    throw new Error("User not authorized")
   }
 
-  const updatedComment = await Comment.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  })
+  const updatedComment = await Comment.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+    }
+  )
   res.status(200).json(updatedComment)
 })
 
@@ -67,23 +75,22 @@ const deleteComment = asyncHandler(async (req, res) => {
 
   if (!comment) {
     res.status(400)
-    throw new Error('Comment not found')
+    throw new Error("Comment not found")
   }
   // Check for user
   if (!req.user) {
     res.status(401)
-    throw new Error('User not found')
+    throw new Error("User not found")
   }
   // Make sure the logged in user matches the comment user
   if (comment.user.toString() !== req.user.id) {
     res.status(401)
-    throw new Error('User not authorized')
+    throw new Error("User not authorized")
   }
 
   await comment.remove()
   res.status(200).json({ id: req.params.id })
 })
-
 
 module.exports = {
   getComments,
