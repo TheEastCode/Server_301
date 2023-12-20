@@ -1,52 +1,58 @@
 const asyncHandler = require('express-async-handler');
-const Snake = require('../models/snakeModel');
+const Game = require('../models/gameModel');
 const User = require('../models/userModel');
+
 
 // Utility function to update goal completion status
 const updateGoalsCompletionStatus = async (userId) => {
-    const snake = await Snake.findOne({ user: userId });
-    if (snake && snake.goalsCompleted >= 5 && !snake.snakeGameAllowed) {
-        snake.snakeGameAllowed = true;
-        await snake.save();
+    const user = await User.findOne({ user: userId })
+    if (user && user.goalsCompleted >= 5 && !user.snakeGameAllowed) {
+        user.snakeGameAllowed = true;
+        await user.save();
     }
 };
+
 
 // @desc    Get user 5-goal completion status
 // @access  Private
 const getGoalsCompletionStatus = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-
-    const snake = await Snake.findOne({ user: userId });
-    if (!snake) {
+    const user = await User.findById(userId)
+    if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
-
     // Update the goal completion status
     await updateGoalsCompletionStatus(userId);
-
-    res.json({ goalsCompleted: snake.goalsCompleted, snakeGameAllowed: snake.snakeGameAllowed });
+    res.json({
+        goalsCompleted: user.goalsCompleted,
+        snakeGameAllowed: user.snakeGameAllowed
+    });
 });
+
 
 // @desc    Get user classic snake game high scores
 // @access  Authenticated
 const getUserHighScores = asyncHandler(async (req, res) => {
-    const userId = req.user.id;
-
-    const snake = await Snake.findOne({ user: userId });
-    if (!snake) {
-        return res.status(404).json({ message: 'User not found' });
+    const userId = req.user.id
+    const game = await Game.findOne({ user: userId })
+    if (!game) {
+        return res.status(404).json({ message: 'User not found' })
     }
-
-    res.json({ highestScore: snake.highestScore });
+    res.json({ highestScore: game.highestScore });
 });
+
 
 // @desc    Get top 10 classic snake game high scores
 // @access  Authenticated
 const getAllHighScores = asyncHandler(async (req, res) => {
-    const topScores = await Snake.find({}).sort({ highestScore: -1 }).limit(10);
+    const topScores = await Game.find({})
+        .populate('user')
+        .sort({ highestScore: -1 })
+        .limit(10)
 
     res.json(topScores);
 });
+
 
 // @desc    Post user score
 // @route   POST /api/snakeGame
@@ -54,19 +60,17 @@ const getAllHighScores = asyncHandler(async (req, res) => {
 const setScore = asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const { score } = req.body;
-
-    const snake = await Snake.findOne({ user: userId });
-    if (!snake) {
-        return res.status(404).json({ message: 'User not found' });
+    const game = await Game.findOne({ user: userId });
+    if (!game) {
+        return res.status(404).json({ message: 'Game not found' });
     }
-
-    if (score > snake.highestScore) {
-        snake.highestScore = score;
-        await snake.save();
+    if (score > game.highestScore) {
+        game.highestScore = score;
+        await game.save();
     }
-
-    res.status(201).json(snake);
+    res.status(201).json(game);
 });
+
 
 // @desc    Update user score
 // @route   PUT /api/snakeGame/:userId
@@ -74,19 +78,17 @@ const setScore = asyncHandler(async (req, res) => {
 const updateUserHighScore = asyncHandler(async (req, res) => {
     const userId = req.params.userId;
     const { score } = req.body;
-
-    const snake = await Snake.findOne({ user: userId });
-    if (!snake) {
-        return res.status(404).json({ message: 'User not found' });
+    const game = await Game.findOne({ user: userId });
+    if (!game) {
+        return res.status(404).json({ message: 'Game not found' });
     }
-
-    if (score > snake.highestScore) {
-        snake.highestScore = score;
-        await snake.save();
+    if (score > game.highestScore) {
+        game.highestScore = score;
+        await game.save();
     }
-
-    res.json(snake);
+    res.json(game);
 });
+
 
 module.exports = {
     getGoalsCompletionStatus,

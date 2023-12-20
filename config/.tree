@@ -3,26 +3,28 @@
 │   └── db.js
 ├── controllers
 │   ├── commentController.js
+│   ├── gameController.js
 │   ├── goalController.js
-│   ├── snakeController.js
 │   ├── taskController.js
 │   └── userController.js
 ├── middleware
+│   ├── auth0.js
 │   ├── authMiddleware.js
 │   └── errorMiddleware.js
 ├── models
 │   ├── commentModel.js
+│   ├── gameModel.js
 │   ├── goalModel.js
-│   ├── snakeModel.js
 │   └── userModel.js
 ├── package.json
 ├── package-lock.json
 ├── README.md
 ├── routes
 │   ├── commentRoutes.js
+│   ├── gameRoutes.js
 │   ├── goalRoutes.js
 │   ├── taskRoutes.js
 │   └── userRoutes.js
 └── server.js
 
-5 directories, 20 files
+5 directories, 22 files

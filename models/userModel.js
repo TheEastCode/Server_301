@@ -15,7 +15,15 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
     },
-    snakeScore: {
+    goalsCompleted: {
+      type: Number,
+      default: 0
+    },
+    snakeGameAllowed: {
+      type: Boolean,
+      default: false,
+    },
+    games: {
       score: {
         type: Number,
         default: 0,

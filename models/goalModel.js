@@ -17,6 +17,11 @@ const goalSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please add a description'],
   },
+  status: {
+    type: String,
+    default: 'Private',
+    enum: ['Public', 'Private'],
+  },
   tasks: [tasksSchema],
   isCompleted: {
     type: Boolean,
