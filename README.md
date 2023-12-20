@@ -8,6 +8,10 @@
 -Ekow Yawson
 -Latherio Kidd
 
+## [Render Deploy Link](https://goalease.onrender.com)
+
+## [Netlify Deploy Link]()
+
 ## What is GoalEase Snake Edition?
 
 ### Summary of Idea:
@@ -25,3 +29,31 @@ GoalSnake is the gamified component within GoalEase Snake Edition. Each segment 
 
 ![wireframe1](wireframe1.png)
 ![wireframe2](wireframe2.png)
+
+## Domain Model 
+
+![Alt text](image.png)
+
+This simple domain model includes four main entities: User, Game, Comment, and Goal. Each entity has attributes (properties) and methods (operations) associated with it. Relationships between entities are represented through associations.
+
+User can create an account, log in, and reset the password.
+Game can be created, updated, and deleted.
+Comment is associated with both User and Game and can be added, edited, and deleted.
+Goal is associated with a User and can be created, updated, and deleted.
+
+## Schema Diagram
+
+![Alt text](image-1.png)
+
+### Explanation:
+
+-*PK*: Primary Key
+
+-*FK*: Foreign Key
+
+### In this schema diagram:
+
+Each box represents a table in the database.
+The fields (attributes) of each table are listed within the corresponding box.
+Primary keys are indicated with "PK," and foreign keys are indicated with "FK."
+Relationships between tables are depicted by connecting the corresponding foreign keys.
