@@ -8,8 +8,8 @@ const {
     updateUserHighScore
 } = require('../controllers/gameController')
 
-const { protect } = require('../middleware/authMiddleware')
-// const { protect } = require('../middleware/auth')
+// const { protect } = require('../middleware/authMiddleware')
+const { protect } = require('../middleware/auth0')
 
 // Assuming you have middleware for authentication
 router.get('/completion-status', protect, getGoalsCompletionStatus)

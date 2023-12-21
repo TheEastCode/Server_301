@@ -8,8 +8,8 @@ const {
 } = require('../controllers/taskController')
 
 const { updateGoalCompletionStatus } = require('../controllers/goalController')
-const { protect } = require('../middleware/authMiddleware')
-// const { protect } = require('../middleware/auth')
+// const { protect } = require('../middleware/authMiddleware')
+const { protect } = require('../middleware/auth0')
 
 // Get a task and update goal completion status
 router.get('/:taskId', protect, async (req, res, next) => {
