@@ -25,8 +25,8 @@ const updateGoalCompletionStatus = async (goalId) => {
 // @access  Private
 const getPublicGoals = asyncHandler(async (req, res) => {
   const goals = await Goal.find({ status: "public" })
-      .populate("user")
-      .sort({ createdAt: 'desc' })
+    .populate("user")
+    .sort({ createdAt: 'desc' })
   res.status(200).json(goals)
 });
 
@@ -36,6 +36,8 @@ const getPublicGoals = asyncHandler(async (req, res) => {
 // @access  Private
 const getGoals = asyncHandler(async (req, res) => {
   const goals = await Goal.find({ user: req.user.id })
+    .populate("user")
+    .sort({ createdAt: 'desc' })
   res.status(200).json(goals)
 })
 
@@ -44,17 +46,26 @@ const getGoals = asyncHandler(async (req, res) => {
 // @route   POST /api/goals
 // @access  Private
 const createGoal = asyncHandler(async (req, res) => {
-  if (!req.body.description) {
-    res.status(400);
-    throw new Error("Please add a description")
+  const { description, tasks, status } = req.body;
+  // Check if description is provided
+  if (!description) {
+    res.status(400).json({ message: "Please add a description" });
+    return; // Stop further execution
   }
-
-  const goal = await Goal.create({
-    description: req.body.description,
-    user: req.user.id,
-  })
-  res.status(200).json(goal)
-})
+  // Use 'Private' as default status if not provided
+  const goalStatus = status || 'Private';
+  try {
+    const goal = await Goal.create({
+      description,
+      user: req.user.id,
+      status: goalStatus,
+      tasks: tasks || [] // Ensure tasks is an array if not provided
+    });
+    res.status(201).json(goal); // Status code 201 for resource creation
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 
 // @desc    Update goal
@@ -77,12 +88,11 @@ const updateGoal = asyncHandler(async (req, res) => {
     res.status(401)
     throw new Error("User not authorized")
   }
-
   const updatedGoal = await Goal.findByIdAndUpdate(
     req.params.id,
     req.body, {
-      new: true
-    }
+    new: true
+  }
   );
   res.status(200).json(updatedGoal)
 })
@@ -92,8 +102,8 @@ const updateGoal = asyncHandler(async (req, res) => {
 // @route   DELETE /api/goals/:id
 // @access  Private
 const deleteGoal = asyncHandler(async (req, res) => {
-  const goal = await Goal.findById(req.params.id)
-
+  const goalId = req.params.id;
+  const goal = await Goal.findById(goalId)
   if (!goal) {
     res.status(400)
     throw new Error("Goal not found")
@@ -108,11 +118,14 @@ const deleteGoal = asyncHandler(async (req, res) => {
     res.status(401)
     throw new Error("User not authorized")
   }
-  // Delete all tasks associated with the goal
-  await Task.deleteMany({ goal: goal._id })
-  // Delete the goal
-  await goal.remove()
-  res.status(200).json({ id: req.params.id })
+  // Delete goal
+  // await Task.deleteMany({ goal: goal._id })
+  const deletedGoal = await Goal.deleteOne({ _id: goalId })
+  if (deletedGoal) {
+    res.status(200).json({ DeletedGoal: goalId })
+  } else {
+    throw new Error("ERROR: Failed to delete goal.")
+  }
 })
 
 

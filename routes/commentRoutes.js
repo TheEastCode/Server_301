@@ -7,8 +7,8 @@ const {
   deleteComment,
 } = require('../controllers/commentController')
 
-const { protect } = require('../middleware/authMiddleware')
-// const { protect } = require('../middleware/auth')
+// const { protect } = require('../middleware/authMiddleware')
+const { protect } = require('../middleware/auth0')
 
 router.route('/comments').get(protect, getComments).post(protect, postComment)
 router.route('/:id').delete(protect, deleteComment).put(protect, updateComment)

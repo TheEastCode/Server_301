@@ -1,50 +1,55 @@
-const jwt = require('jsonwebtoken')
-const asyncHandler = require('express-async-handler')
-const jwksClient = require('jwks-rsa')
+const jwt = require('jsonwebtoken');
+const asyncHandler = require('express-async-handler');
+const jwksClient = require('jwks-rsa');
+const User = require('../models/userModel');
+const cl = (i) => console.log(i);
+
+const checkDBForUser = asyncHandler(async (authUser, token) => {
+    if (token && authUser) {
+        let user = await User.findOne({ email: authUser.email });
+        if (!user) {
+            user = await User.create(authUser);
+            if (!user) {
+                throw new Error('Invalid user data');
+            }
+        }
+        user.token = token;
+        await user.save();
+        return user;
+    }
+});
 
 const protect = asyncHandler(async (req, res, next) => {
-    let token
-    const valid = (err, user) => {
-        if (err) { next(err) }
-        request.user = user;
-        next()
-    }
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+        jwt.verify(token, getKey, {}, async (err, decodedTokenUser) => {
+            if (err) {
+                return res.status(401).json({ message: 'Not authorized' });
+            }
 
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
-        try {
-            token = req.headers.authorization.split(' ')[1]
-            jwt.verify(token, getKey, {}, valid)
-            req.user = user
-        } catch (e) {
-            console.log(error)
-            res.status(401).next('Not Authorized')
-            throw new Error('Not authorized')
-        }
+            try {
+                const dbUser = await checkDBForUser(decodedTokenUser, token);
+                req.user = { ...decodedTokenUser, id: dbUser.id, _id: dbUser._id };
+                next();
+            } catch (e) {
+                next(e);
+            }
+        });
+    } else {
+        res.status(401).json({ message: 'Not authorized, no token' });
     }
+});
 
-    if (!token) {
-        res.status(401)
-        throw new Error('Not authorized, no token')
-    }
-})
-
-// DEFINE A CLIENT
-// This is a connection to YOUR auth0 account
-// Use the URL given in your auth0 dashboard
 const client = jwksClient({
     jwksUri: process.env.JWKS_URI,
-})
+});
 
-// VALIDATE KEY
-// Match the JWT's key to your Auth0 Account Key
 function getKey(header, callback) {
-    client.getSigningKey(header.kid, function (err, key) {
-        const signingKey = key.publicKey || key.rsaPublicKey
-        callback(null, signingKey)
-    })
+    client.getSigningKey(header.kid, (err, key) => {
+        const signingKey = key.publicKey || key.rsaPublicKey;
+        callback(null, signingKey);
+    });
 }
 
-module.exports = protect
+module.exports = { protect };
