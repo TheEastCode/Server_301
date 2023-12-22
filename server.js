@@ -28,7 +28,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/goals', goalRoutes)
 app.use('/api/goals/:goalId/tasks', taskRoutes)
 app.use('/api/games/:userId', gameRoutes)
-app.use('/api/games/comments', commentRoutes)
+app.use('/api/comments', commentRoutes)
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {

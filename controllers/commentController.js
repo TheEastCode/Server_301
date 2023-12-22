@@ -7,7 +7,7 @@ const User = require("../models/userModel")
 // @route   GET /api/comments
 // @access  Authenticated
 const getComments = asyncHandler(async (req, res) => {
-  const comments = await Comment.find({ status: "public" })
+  const comments = await Comment.find()
     .populate("user")
     .sort({ createdAt: "desc" })
     .lean()
@@ -23,14 +23,10 @@ const postComment = asyncHandler(async (req, res) => {
     res.status(400)
     throw new Error("Please add a text field")
   }
-
-  const type = req.params.type
-  const id = req.params.id
   const comment = await Comment.create({
     text: req.body.text,
-    user: req.user.id,
+    user: req.user.id
   })
-  comment.setTarget(type, id)
   res.status(200).json(comment)
 })
 
